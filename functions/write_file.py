@@ -8,7 +8,6 @@ def write_file(working_directory: str, file_path: str, content: str) -> str:
         valid_target_file = (
             os.path.commonpath([working_dir_abs, target_file]) == working_dir_abs
         )
-        valid_file = os.path.isfile(target_file)
 
         if not valid_target_file:
             return f'Error: Cannot write to "{file_path}" as it is outside the permitted working directory'
@@ -27,3 +26,25 @@ def write_file(working_directory: str, file_path: str, content: str) -> str:
 
     except Exception as e:
         return f"Error {e}"
+
+schema_write_file = {
+    "type": "function",
+    "function": {
+        "name": "write_file",
+        "description": "Writes to a file.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "file_path": {
+                    "type": "string",
+                    "description": "The file path in which the content will be written on.",
+                },
+                "content": {
+                    "type": "string",
+                    "description": "The contents that is going to be written to the file."
+                },
+            },
+            "required": ["file_path", "content"]
+        },
+    },
+}

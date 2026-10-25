@@ -1,7 +1,10 @@
+import json
 import os
 from dotenv import load_dotenv
 from openai import OpenAI
 import argparse
+from prompts import system_prompt
+from call_function import available_functions
 
 load_dotenv()
 api_key = os.environ.get("OPENROUTER_API_KEY")
@@ -20,12 +23,14 @@ parser.add_argument("--verbose", action="store_true", help="Enable verbose outpu
 args = parser.parse_args()
 
 messages = [
+    {"role": "system", "content": system_prompt},
     {"role": "user", "content": args.user_prompt},
 ]
 
 response = client.chat.completions.create(
     model="anthropic/claude-haiku-5.5",
     messages=messages,
+    tools=available_functions,
 )
 
 if response.usage:
@@ -38,6 +43,14 @@ if response.usage:
         print(f"Prompt tokens: {prompt_tokens}")
         print(f"Response tokens: {completion_tokens}")
 
-    print(response.choices[0].message.content)
+    message = response.choices[0].message
+
+    if message.tool_calls:
+        for tool_call in message.tool_calls:
+            function_args = json.loads(tool_call.function.arguments or "{}")
+            print(f"Calling function: {tool_call.function.name}({function_args})")
+    else:
+        print(message.content)
+
 else:
     raise RuntimeError("API request failed")

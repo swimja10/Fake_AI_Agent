@@ -49,3 +49,26 @@ def run_python_file(
 
     except Exception as e:
         return f"Error: executing Python file: {e}"
+
+
+schema_run_python_file = {
+    "type": "function",
+    "function": {
+        "name": "run_python_file",
+        "description": "Runs Python only files. If the file is not Python it will not run.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "file_path": {
+                    "type": "string",
+                    "description": "The file path to where the python file is at.",
+                },
+                "args": {
+                    "type": "array",
+                    "description": "An optional args parameter that is an array whose items are strings",
+                },
+            },
+            "required": ["file_path"],
+        },
+    },
+}

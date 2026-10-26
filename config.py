@@ -1,1 +1,4 @@
-MAX_CHARS = 10000
+MAX_CHARS = 10_000
+WORKING_DIR = "./calculator"
+MAX_ITERS = 20
+
